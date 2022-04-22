@@ -1,3 +1,22 @@
+
+async function getArticles() {
+    const articlescatch = await fetch("http://localhost:3000/api/products");
+    return await articlescatch.json();
+}
+
+async function showArticles() {
+    const articles = await getArticles();
+    articles.forEach(article => {
+        console.log(article);
+    });
+}
+
+showArticles();
+
+
+
+
+  /*
 Acceuil()
 
 // Récupération des articles de l'API
@@ -7,7 +26,6 @@ async function getArticles() {
 }
 
 
-/*
 async function Acceuil() {
    const result = await getArticles ()
     .then(function (resultatAPI){
