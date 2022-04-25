@@ -7,9 +7,36 @@ async function getArticles() {
 async function showArticles() {
     const articles = await getArticles();
     articles.forEach(article => {
+        const articleContainer = document.getElementById("items");
+        const articleLink = document.createElement("a");
+        const articleTag = document.createElement("article");
+        const imageTag = document.createElement("img");
+        const titleTag = document.createElement("h3");
+        const articleDescritpion = document.createElement("p");
+
+        imageTag.src = article.imageUrl;
+        titleTag.classList.add("articleName");
+        titleTag.textContent = article.name;
+        articleDescritpion.textContent = article.description;
+
+        articleLink.append(articleTag)
+        articleTag.append(imageTag);
+        articleTag.append(titleTag);
+        articleTag.append(articleDescritpion);
+        articleContainer.append(articleLink);
+        
         console.log(article);
     });
-}
+
+    try {
+        nonExistentFunction();
+      } catch (error) {
+        console.error(error);
+        // expected output: ReferenceError: nonExistentFunction is not defined
+        // Note - error messages will vary depending on browser
+      }
+    
+};
 
 showArticles();
 
