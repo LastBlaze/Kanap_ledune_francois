@@ -38,4 +38,3 @@ async function showArticles() {
 };
 
 showArticles();
-s
