@@ -1,11 +1,16 @@
 //Récupéré les données de l'API
 async function getArticles() {
     const articlescatch = await fetch("http://localhost:3000/api/products");
-    return await articlescatch.json();
+    if(articlescatch.ok){
+      return await articlescatch.json();
+    } else {
+      console.error(articlescatch.statusText)
+    }
+    
 }
 
-
 async function showArticles() {
+  try{
     const articles = await getArticles();
     articles.forEach(article => {
         //Création des emplacements pour les éléments de l'API
@@ -19,9 +24,11 @@ async function showArticles() {
         //Indication de l'équivalence des constantes par rapport au données de l'API
         articleLink.href = "./product.html?id=" + article["_id"];
         imageTag.src = article.imageUrl;
-        titleTag.classList.add("articleName");
+        imageTag.alt = article.altTxt;
+        titleTag.classList.add("productName");
         titleTag.textContent = article.name;
         articleDescritpion.textContent = article.description;
+        articleDescritpion.classList.add("productDescription");
        
         //Résultat des constantes
         articleLink.append(articleTag)
@@ -32,14 +39,19 @@ async function showArticles() {
         
         console.log(article);
     });
-
-    //En cas d'erreur
-    try {
-        nonExistentFunction();
-      } catch (error) {
-        console.error(error);
+      } catch (e) {
+        console.error(e);
       }
 };
 
 showArticles();
 
+
+/*
+function trier(liste){
+  liste.sort()
+  console.log(liste);
+}
+
+trier(["banane", "pomme", "avocat", "cornichon"])
+*/
