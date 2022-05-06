@@ -1,13 +1,3 @@
-/*
-//URLSearchParams 
-function idProduct() {  
-  const str = window.location.href;
-  const url = new URL (str);
-  const idpro = url.searchParams.get("id");
-  return idpro;
-};
-*/
-
 let urlparam = new URLSearchParams(window.location.search);
 let idProduct = urlparam.get("id");
 
@@ -66,12 +56,8 @@ async function showArticle() {
 
       let addArticle = {
         id: idProduct,
-        title: title.textContent,
         quantity: selectQuantity.value,
         color: selectColors.value,
-        image: getArticle,
-        alt: getArticle,
-        price: price.textContent,
       };
   
       /*const lienPageCart = (window.location.href = "cart.html");*/
