@@ -12,9 +12,6 @@ async function getProduct(id) {
 
 async function showProduct() {
   try {
-    let totalPrice = 0;
-    let totalQuantity = 0;
-
     let products = JSON.parse(localStorage.getItem("product"));
 
     await products.forEach(async (product) => {
@@ -47,7 +44,8 @@ async function showProduct() {
       //Inséré l'élément"div"
       let productItemContentDescription = document.createElement("div");
       productItemContent.appendChild(productItemContentDescription);
-      productItemContentDescription.className = "cart__item__content__description";
+      productItemContentDescription.className =
+        "cart__item__content__description";
 
       //Inséré le titre h2
       let productTitle = document.createElement("h2");
@@ -63,8 +61,15 @@ async function showProduct() {
       let productPrice = document.createElement("p");
       productColor.appendChild(productPrice);
       productPrice.textContent = details.price + "€";
-      totalPrice += details.price;
-      
+      var totalpricespan = document.getElementById("totalPrice");
+      if (totalpricespan.textContent == "") {
+        totalpricespan.innerText = +parseInt(details.price) + ",00";
+      } else {
+        totalpricespan.innerText =
+          parseInt(totalpricespan.textContent) +
+          parseInt(details.price) +
+          ",00";
+      }
 
       //Inséré l'élément "div"
       let productItemContentSettings = document.createElement("div");
@@ -76,13 +81,16 @@ async function showProduct() {
       productItemContentSettings.appendChild(
         productItemContentSettingsQuantity
       );
-      productItemContentSettingsQuantity.className = "cart__item__content__settings__quantity";
+      productItemContentSettingsQuantity.className =
+        "cart__item__content__settings__quantity";
 
       //Inséré l'élément "quantité"
       let productQte = document.createElement("p");
       productItemContentSettingsQuantity.appendChild(productQte);
-      productQte.textContent = product.quantity;
-      totalQuantity += product.quantity;
+      productQte.textContent = "Qté :";
+      var totalqtespan = document.getElementById("totalQuantity");
+      totalqtespan.innerText =
+        parseInt(totalqtespan.textContent) + parseInt(product.quantity);
 
       //Inséré la quantité
       let productQuantity = document.createElement("input");
@@ -97,54 +105,21 @@ async function showProduct() {
       //INSERER L'ELEMENT 'DIV'
       let productItemContentSettingsDelete = document.createElement("div");
       productItemContentSettings.appendChild(productItemContentSettingsDelete);
-      productItemContentSettingsDelete.className = "cart__item__content__settings__delete";
+      productItemContentSettingsDelete.className =
+        "cart__item__content__settings__delete";
 
       //INSERER L'ELEMENT  'P' SUPPRIMER
       let productDelete = document.createElement("p");
       productItemContentSettingsDelete.appendChild(productDelete);
       productDelete.className = "deleteItem";
       productDelete.textContent = "Supprimer";
-    })
+    });
   } catch (e) {
     console.log(e);
   }
 }
 showProduct();
 /*});*/
-
-
-
-const listOfQuantity = document.getElementsByClassName("itemQuantity");
-let totalQuantity = document.getElementById("totalQuantity");
-let totalPrice = document.getElementById("totalPrice");
-
-function totalQuantityPrices() {
-  //Quantité totale
-  let sumQuantity = 0;
-  for (let i = 0; i < listOfQuantity.length; i++) {
-      sumQuantity += parseInt(listOfQuantity[i].value);
-  }
-  totalQuantity.innerHTML = sumQuantity;
-
-  //Prix total
-  let listOfPrices = document.getElementsByClassName("cart__item__content__description p");
-  let sumPrices = 0;
-  for (let i = 0; i < listOfPrices.length; i++) {
-      sumPrices += parseInt(listOfPrices[i].innerHTML) * listOfQuantity[i].value;
-  }
-  totalPrice.innerHTML = sumPrices;
-}
-totalQuantityPrices()
-
-
-
-
-
-
-
-
-
-
 
 /*
 //Calcul de la quantité total et du prix total
@@ -173,13 +148,10 @@ function totalQuantityPrices() {
   totalPrice.textContent = kanapPrice;
 }*/
 
-totalQuantityPrices();
-
 //Changement de la quantité directement dans le panier
-function changeQuantity() {
+/*function changeQuantity() {
   for (let input of listOfQuantity) {
     input.addEventListener("change", function () {
-      totalQuantityPrices();
       input.dataset.value = input.value;
 
       for (let i = 0; i < products.lenght; i++) {
@@ -210,4 +182,4 @@ function deleteItem() {
       totalQuantityPrices();
     });
   }
-}
+}*/
