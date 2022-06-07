@@ -23,7 +23,8 @@ async function showProduct() {
       let productArticle = document.createElement("article");
       document.querySelector("#cart__items").appendChild(productArticle);
       productArticle.className = "cart__item";
-      productArticle.setAttribute("data-id", details._id);
+      productArticle.dataset.id = details._id;
+      productArticle.dataset.color = product.color;
 
       //Inserer l'élément "div"
       let productDivImg = document.createElement("div");
@@ -54,20 +55,20 @@ async function showProduct() {
 
       //Inséré la couleur
       let productColor = document.createElement("p");
-      productTitle.appendChild(productColor);
+      productItemContentDescription.appendChild(productColor);
       productColor.textContent = product.color;
 
       //Inséré le prix
       let productPrice = document.createElement("p");
-      productColor.appendChild(productPrice);
+      productItemContentDescription.appendChild(productPrice);
       productPrice.textContent = details.price + "€";
       var totalpricespan = document.getElementById("totalPrice");
       if (totalpricespan.textContent == "") {
-        totalpricespan.innerText = +parseInt(details.price) + ",00";
+        totalpricespan.innerText = + (parseInt(details.price) * parseInt(product.quantity))+ ",00";
       } else {
         totalpricespan.innerText =
           parseInt(totalpricespan.textContent) +
-          parseInt(details.price) +
+          (parseInt(details.price) * parseInt(product.quantity)) +
           ",00";
       }
 
@@ -78,9 +79,7 @@ async function showProduct() {
 
       //Inséré l'élément "div"
       let productItemContentSettingsQuantity = document.createElement("div");
-      productItemContentSettings.appendChild(
-        productItemContentSettingsQuantity
-      );
+      productItemContentSettings.appendChild(productItemContentSettingsQuantity);
       productItemContentSettingsQuantity.className =
         "cart__item__content__settings__quantity";
 
@@ -89,9 +88,14 @@ async function showProduct() {
       productItemContentSettingsQuantity.appendChild(productQte);
       productQte.textContent = "Qté :";
       var totalqtespan = document.getElementById("totalQuantity");
-      totalqtespan.innerText =
-        parseInt(totalqtespan.textContent) + parseInt(product.quantity);
-
+      if (totalqtespan.textContent == "") {
+        totalqtespan.innerText = parseInt(product.quantity);
+      } else {
+        totalqtespan.innerText =
+          parseInt(totalqtespan.textContent) +
+          parseInt(product.quantity);
+      }
+      
       //Inséré la quantité
       let productQuantity = document.createElement("input");
       productItemContentSettingsQuantity.appendChild(productQuantity);
@@ -101,6 +105,20 @@ async function showProduct() {
       productQuantity.setAttribute("min", "1");
       productQuantity.setAttribute("max", "100");
       productQuantity.setAttribute("name", "itemQuantity");
+
+      productQuantity.addEventListener("change", (event) => {
+        if (productQuantity.value >= 1  && productQuantity.value <=100) { 
+        var quantityInput = event.target;
+        var newQte = quantityInput.value;
+        var ArticleDiv = quantityInput.closest("article");
+        var idKanap = ArticleDiv.dataset.id;
+        var colorKanap = ArticleDiv.dataset.color;
+        updateQuantity(newQte, idKanap, colorKanap);
+      } else {
+        alert ("la quauntité doit être comprise entre 1 et 100 !")
+        document.location.reload();
+      }
+      })
 
       //INSERER L'ELEMENT 'DIV'
       let productItemContentSettingsDelete = document.createElement("div");
@@ -113,73 +131,43 @@ async function showProduct() {
       productItemContentSettingsDelete.appendChild(productDelete);
       productDelete.className = "deleteItem";
       productDelete.textContent = "Supprimer";
+      
+      productDelete.addEventListener("click", (event) => {
+        var deleteInput = event.target;
+        var ArticleDiv = deleteInput.closest("article");
+        var idKanap = ArticleDiv.dataset.id;
+        var colorKanap = ArticleDiv.dataset.color;
+        deleteItems(colorKanap, idKanap);
+      })
     });
   } catch (e) {
     console.log(e);
   }
 }
 showProduct();
-/*});*/
 
-/*
-//Calcul de la quantité total et du prix total
-function totalQuantityPrices() {
-  //Afficher la quantité des produits
-  let kanapQuantity = 0;
-  for (let i = 0; i < listOfQuantity.length; i++) {
-    kanapQuantity += parseInt(listOfQuantity[i].value);
-  }
-  totalQuantity.textContent = kanapQuantity;
-
-  //Afficher le prix des produits
-  let listOfPrices = [
-    ...document.getElementsByClassName("cart__item__content__description"),
-  ];
-  console.log(listOfPrices);
-  let kanapPrice = 0;
-  listOfPrices.forEach((div) => {
-    console.log(div);
-  });
-  /*for (let i = 0; i < listOfPrices.length; i++) {
-        console.log(i);
-        console.log(listOfPrices[i].querySelector("p:nth-child(3)"));
-        kanapPrice += parseInt(listOfPrices[i].textContent) * listOfQuantity[i].value;
+//fonction pour supprimer un article
+function deleteItems(colorKanap, idKanap) {
+  let myCart = JSON.parse(localStorage.getItem("product"));
+  myCart.forEach((kanap, index) => {
+    if (kanap.id === idKanap && kanap.color == colorKanap) {
+      myCart.splice(index, 1)
     }
-  totalPrice.textContent = kanapPrice;
-}*/
-
-//Changement de la quantité directement dans le panier
-/*function changeQuantity() {
-  for (let input of listOfQuantity) {
-    input.addEventListener("change", function () {
-      input.dataset.value = input.value;
-
-      for (let i = 0; i < products.lenght; i++) {
-        products[i].quantity = listOfQuantity[i].dataset.value;
-      }
-      localStorage.setItem("product", JSON.stringify(products));
-    });
-  }
+  });
+  localStorage.setItem("product", JSON.stringify(myCart));
+  document.location.reload();
 }
 
-changeQuantity();
+//fontcion pour modifier la quantité
+function updateQuantity(newQuantity, idKanap, colorKanap) {
+  let myCart = JSON.parse(localStorage.getItem("product"));
+  myCart.forEach((kanap) => {
+    if (kanap.id === idKanap && kanap.color == colorKanap) {
+      kanap.quantity = newQuantity;
+    }
+  });
+  localStorage.setItem("product", JSON.stringify(myCart));
+  document.location.reload();
+}
 
-//Supprimer un produit directement dans le panier
-function deleteItem() {
-  let deleteProduct = document.querySelectorAll(".deleteItem");
 
-  for (let deleteButton of deleteProduct) {
-    deleteButton.addEventListener("click", function () {
-      let deleteProductInCart = deleteButton.closest("article");
-      deleteProductInCart.remove();
-
-      for (let i = 0; i < products.lenght; i++) {
-        if (deleteProductInCart.dataset.id == products[i].id) {
-          products.splice(i, 1);
-          localStorage.setItem("product", JSON.stringify(products));
-        }
-      }
-      totalQuantityPrices();
-    });
-  }
-}*/
