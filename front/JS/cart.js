@@ -270,9 +270,9 @@ btnCommander.addEventListener("click", (event) => {
     nameRegex.test(city.value) == false ||
     emailRegex.test(email.value) == false
   ) {
-    alert("merci de vérifier vos coordonnées !");
+    alert("Merci de vérifier vos coordonnées !");
     } else {
-      alert("formulaire validé");
+      alert("Formulaire validé");
       let products = [];
       JSON.parse(localStorage.getItem("product")).forEach((order) => {
         products.push(order.id)

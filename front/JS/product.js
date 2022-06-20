@@ -93,7 +93,7 @@ async function showArticle() {
     }
   }}
   else {
-    alert ("veuillez selectionner une couleur ainsi qu'une quantité");
+    alert ("Veuillez sélectionner une couleur ainsi qu'une quantité !");
   }})}
   showArticle();
 
